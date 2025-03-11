@@ -1,52 +1,63 @@
+"use client";
+
 import axios from "axios";
+import { useEffect, useState } from "react";
 
-const movieId = 11;
-const apiKey =
-  "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3OTY1ZjBkZjY0YmRmNjQ5YzZlZDFhOGY1YWNmYTdmNiIsIm5iZiI6MTc0MTA1NjI4My42LCJzdWIiOiI2N2M2NjkxYjViMWQ4ZDQ4YzUwNGQzMTUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ybizjPAJe8UKFEHNpqmaj323t1KqmS704V5Tet1jEeU";
-
-// 영화 세부 정보를 가져오는 함수
-const fetchMovieDetails = async () => {
-  try {
-    const response = await axios.get(
-      `https://api.themoviedb.org/3/movie/${movieId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-      }
-    );
-
-    console.log(response.data);
-  } catch (error) {
-    console.error("Error fetching movie details:", error);
-  }
-};
-
-// 영화 비디오 정보를 가져오는 함수
-const fetchMovieVideos = async () => {
-  try {
-    const response = await axios.get(
-      `https://api.themoviedb.org/3/movie/${movieId}/videos`,
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-      }
-    );
-
-    console.log(response.data);
-  } catch (error) {
-    console.error("Error fetching movie videos:", error);
-  }
+type MovieInformation = {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_date: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
 };
 
 export default function Search() {
-  fetchMovieDetails();
-  fetchMovieVideos();
+  const [movieInformation, setMovieInformation] = useState<MovieInformation[]>(
+    []
+  );
+
+  const apiKey =
+    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3OTY1ZjBkZjY0YmRmNjQ5YzZlZDFhOGY1YWNmYTdmNiIsIm5iZiI6MTc0MTA1NjI4My42LCJzdWIiOiI2N2M2NjkxYjViMWQ4ZDQ4YzUwNGQzMTUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ybizjPAJe8UKFEHNpqmaj323t1KqmS704V5Tet1jEeU";
+
+  // 영화 비디오 정보를 가져오는 함수
+  const fetchMovieInformation = async () => {
+    const url =
+      "https://api.themoviedb.org/3/movie/top_rated?language=ko&page=1";
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+    };
+    try {
+      const response = await axios.get(url, options);
+      setMovieInformation(response.data); // 결과 배열을 설정
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovieInformation();
+  }, []);
+
   return (
     <>
-      <button onClick={fetchMovieDetails}>세부정보 불러오기</button>
-      <button onClick={fetchMovieVideos}>비디오 정보 불러오기</button>
+      <button onClick={fetchMovieInformation}>비디오 정보 불러오기</button>
+
+      {movieInformation.map((x, index) => (
+        <h1 key={index}>{x.original_language}</h1>
+      ))}
     </>
   );
 }
