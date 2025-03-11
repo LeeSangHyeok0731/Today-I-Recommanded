@@ -33,7 +33,6 @@ export default function Search() {
     const url =
       "https://api.themoviedb.org/3/movie/top_rated?language=ko&page=1";
     const options = {
-      method: "GET",
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${apiKey}`,
@@ -41,9 +40,9 @@ export default function Search() {
     };
     try {
       const response = await axios.get(url, options);
-      setMovieInformation(response.data); // 결과 배열을 설정
+      setMovieInformation(response.data.results); // 결과 배열을 설정
     } catch (error) {
-      console.log(error);
+      console.error("에러 발생:", error);
     }
   };
 
@@ -54,9 +53,8 @@ export default function Search() {
   return (
     <>
       <button onClick={fetchMovieInformation}>비디오 정보 불러오기</button>
-
-      {movieInformation.map((x, index) => (
-        <h1 key={index}>{x.original_language}</h1>
+      {movieInformation.map((x) => (
+        <h1 key={x.id}>{x.title}</h1>
       ))}
     </>
   );
