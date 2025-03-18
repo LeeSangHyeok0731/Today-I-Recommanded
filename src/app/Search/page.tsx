@@ -52,19 +52,15 @@ export default function Search() {
 
   const router = useRouter();
 
-  const handleClick = (title: string) => {
-    router.push(`detail?title=${encodeURIComponent(title)}`);
+  const handleClick = (title: number) => {
+    router.push(`detail?id=${encodeURIComponent(title)}`);
   };
 
   return (
     <>
       <button onClick={fetchMovieInformation}>비디오 정보 불러오기</button>
       {movieInformation.map((x) => (
-        <p
-          key={x.id}
-          title={x.title}
-          onClick={() => handleClick(x.original_title)}
-        >
+        <p key={x.id} onClick={() => handleClick(x.id)}>
           {x.title}
         </p>
       ))}

@@ -4,34 +4,107 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import styled from "styled-components"; // styled-components 임포트
+
+type Genre = {
+  id: number;
+  name: string;
+};
+
+type ProductionCompany = {
+  id: number;
+  logo_path: string | null;
+  name: string;
+  origin_country: string;
+};
+
+type ProductionCountry = {
+  iso_3166_1: string;
+  name: string;
+};
+
+type SpokenLanguage = {
+  english_name: string;
+  iso_639_1: string;
+  name: string;
+};
 
 type Movie = {
   adult: boolean;
   backdrop_path: string | null;
-  genre_ids: number[];
+  belongs_to_collection: null | object;
+  budget: number;
+  genres: Genre[];
+  homepage: string;
   id: number;
+  imdb_id: string;
+  origin_country: string[];
   original_language: string;
   original_title: string;
   overview: string;
   popularity: number;
   poster_path: string | null;
+  production_companies: ProductionCompany[];
+  production_countries: ProductionCountry[];
   release_date: string;
+  revenue: number;
+  runtime: number;
+  spoken_languages: SpokenLanguage[];
+  status: string;
+  tagline: string;
   title: string;
   video: boolean;
   vote_average: number;
   vote_count: number;
 };
 
+const Container = styled.div`
+  padding: 16px;
+`;
+
+const MovieTitle = styled.h2`
+  font-size: 1.25rem;
+  font-weight: bold;
+`;
+
+const MovieReleaseDate = styled.p`
+  color: #6b7280; // Gray color (tailwind's text-gray-500 equivalent)
+`;
+
+const MovieOverview = styled.p`
+  margin-top: 8px;
+`;
+
+const PosterImage = styled(Image)`
+  margin-top: 16px;
+  border-radius: 8px;
+`;
+
+const Rating = styled.p`
+  margin-top: 8px;
+`;
+
+const GenreContinaer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 300px;
+  align-items: space-between;
+  justify-content: space-between;
+`;
+
 export default function Details() {
   const searchParams = useSearchParams();
-  const title = searchParams.get("title") || "제목 없음";
+  const id = searchParams.get("id");
 
-  const [data, setData] = useState<Movie[]>();
+  const [data, setData] = useState<Movie | null>(null);
 
   const apikey = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
-  const fetchMoviePeople = async () => {
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${apikey}&query=${title}`;
+  const fetchMovieDetails = async () => {
+    if (!id) return;
+
+    const movieId = Number(id);
+    const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apikey}`;
     const options = {
       headers: {
         accept: "application/json",
@@ -40,43 +113,46 @@ export default function Details() {
 
     try {
       const response = await axios.get(url, options);
-      setData(response.data.results);
+      setData(response.data);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    fetchMoviePeople();
-  }, []);
+    fetchMovieDetails();
+  }, [id]);
+
+  if (!data) {
+    return <p>Loading...</p>;
+  }
 
   return (
-    <div>
-      <h1>{title}</h1>
-      {data &&
-        data.map((x: Movie) => {
-          return (
-            <div key={x.id} className="p-4 border-b">
-              <h2 className="text-xl font-bold">{x.title}</h2>
-              <p className="text-gray-500">{x.release_date}</p>
-              <p>{x.overview}</p>
-              {x.poster_path && (
-                <Image
-                  src={`https://image.tmdb.org/t/p/w500${x.poster_path}`}
-                  alt={x.title}
-                  width={500} // 이미지 원본 크기 설정
-                  height={750} // 이미지 원본 크기 설정
-                  className="mt-2 rounded-lg"
-                  priority // LCP(최대 콘텐츠 페인트) 최적화
-                  unoptimized // 외부 URL을 사용하기 때문에 Next.js 이미지 최적화 비활성화 (옵션)
-                />
-              )}
-              <p>
-                ⭐ {x.vote_average} ({x.vote_count} votes)
-              </p>
-            </div>
-          );
-        })}
-    </div>
+    <Container>
+      <div key={data.id} className="border-b">
+        <MovieTitle>{data.title}</MovieTitle>
+        <MovieReleaseDate>{data.release_date}</MovieReleaseDate>
+        <MovieOverview>{data.overview}</MovieOverview>
+        <GenreContinaer>
+          {data.genres.map((x) => {
+            return <p key={x.id}>{x.name}</p>;
+          })}
+        </GenreContinaer>
+        {data.poster_path && (
+          <PosterImage
+            src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+            alt={data.title}
+            width={500}
+            height={750}
+            priority
+            unoptimized
+          />
+        )}
+        <Rating>
+          ⭐ {data.vote_average} ({data.vote_count} votes)
+        </Rating>
+      </div>
+    </Container>
   );
 }
