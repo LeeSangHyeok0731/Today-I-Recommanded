@@ -1,6 +1,7 @@
 "use client";
 
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type MovieInformation = {
@@ -25,8 +26,7 @@ export default function Search() {
     []
   );
 
-  const apiKey =
-    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3OTY1ZjBkZjY0YmRmNjQ5YzZlZDFhOGY1YWNmYTdmNiIsIm5iZiI6MTc0MTA1NjI4My42LCJzdWIiOiI2N2M2NjkxYjViMWQ4ZDQ4YzUwNGQzMTUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ybizjPAJe8UKFEHNpqmaj323t1KqmS704V5Tet1jEeU";
+  const apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
   // 영화 비디오 정보를 가져오는 함수
   const fetchMovieInformation = async () => {
@@ -50,11 +50,23 @@ export default function Search() {
     fetchMovieInformation();
   }, []);
 
+  const router = useRouter();
+
+  const handleClick = (title: string) => {
+    router.push(`detail?title=${encodeURIComponent(title)}`);
+  };
+
   return (
     <>
       <button onClick={fetchMovieInformation}>비디오 정보 불러오기</button>
       {movieInformation.map((x) => (
-        <h1 key={x.id}>{x.title}</h1>
+        <p
+          key={x.id}
+          title={x.title}
+          onClick={() => handleClick(x.original_title)}
+        >
+          {x.title}
+        </p>
       ))}
     </>
   );
