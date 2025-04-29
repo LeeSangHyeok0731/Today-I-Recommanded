@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export const ManRating = () => {
+export default function Man() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,7 +10,7 @@ export const ManRating = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:4000/manrating"); // 🔥 수정
+        const response = await fetch("http://localhost:4000/man"); // 🔥 수정
 
         if (!response.ok) {
           throw new Error("데이터를 불러오는데 실패했습니다");
@@ -43,4 +43,4 @@ export const ManRating = () => {
       </ul>
     </div>
   );
-};
+}

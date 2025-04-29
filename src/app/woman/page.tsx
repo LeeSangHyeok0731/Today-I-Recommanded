@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export const WomanRating = () => {
+export default function Woman() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,7 +10,7 @@ export const WomanRating = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:4000/womanrating"); // 🔥 수정
+        const response = await fetch("http://localhost:4000/woman"); // 🔥 수정
 
         if (!response.ok) {
           throw new Error("데이터를 불러오는데 실패했습니다");
@@ -33,7 +33,7 @@ export const WomanRating = () => {
 
   return (
     <div>
-      <h2>남자 평점 데이터</h2>
+      <h2>여자 평점 데이터</h2>
       <ul>
         {data.map((item: any, index: number) => (
           <li key={index}>
@@ -43,4 +43,4 @@ export const WomanRating = () => {
       </ul>
     </div>
   );
-};
+}
