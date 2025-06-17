@@ -26,6 +26,7 @@ export const MenuText = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 100%;
+  cursor: pointer;
 `;
 
 export const ClickedMenuText = styled.div`
@@ -41,4 +42,5 @@ export const ClickedMenuText = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 100%;
+  cursor: pointer;
 `;
