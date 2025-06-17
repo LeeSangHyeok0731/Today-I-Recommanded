@@ -3,7 +3,7 @@ import { Header } from "@/components/header/header";
 import GlobalStyle from "@/style/GlobalStyle";
 
 export const metadata = {
-  title: "Your App",
+  title: "Today i Recommanded",
   description: "설명",
 };
 

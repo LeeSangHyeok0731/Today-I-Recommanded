@@ -6,6 +6,7 @@ export const HeaderWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 57.625rem;
+  border-bottom: 1px solid #979797;
 `;
 
 export const MenuWrapper = styled.div`
