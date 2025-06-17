@@ -31,7 +31,9 @@ export const Header = () => {
           return x.path === currentPath ? (
             <S.ClickedMenuText key={x.title}>{x.title}</S.ClickedMenuText>
           ) : (
-            <S.MenuText key={x.title}>{x.title}</S.MenuText>
+            <S.MenuText key={x.title} onClick={() => navigator(`${x.path}`)}>
+              {x.title}
+            </S.MenuText>
           );
         })}
       </S.MenuWrapper>
