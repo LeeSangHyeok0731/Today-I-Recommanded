@@ -1,6 +1,5 @@
 // app/layout.tsx
 import { Header } from "@/components/header/header";
-import StyledComponentsRegistry from "@/lib/registry"; // styled-components SSR 지원
 import GlobalStyle from "@/style/GlobalStyle";
 
 export const metadata = {
@@ -22,11 +21,9 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <StyledComponentsRegistry>
-          <GlobalStyle />
-          <Header />
-          {children}
-        </StyledComponentsRegistry>
+        <GlobalStyle />
+        <Header />
+        {children}
       </body>
     </html>
   );
